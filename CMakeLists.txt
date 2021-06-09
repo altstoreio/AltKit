@@ -23,3 +23,4 @@ add_library(AltKit
 
 target_link_libraries(AltKit PUBLIC CAltKit)
 set_property(TARGET AltKit PROPERTY XCODE_ATTRIBUTE_SWIFT_INCLUDE_PATHS "${CMAKE_CURRENT_SOURCE_DIR}/Sources/CAltKit")
+set_property(TARGET AltKit PROPERTY XCODE_ATTRIBUTE_SWIFT_VERSION "5.0")
