@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15.1)
 
-project(AltKit LANGUAGES Swift)
+project(AltKit LANGUAGES C Swift)
 
 add_library(CAltKit
     Sources/CAltKit/NSError+ALTServerError.h
@@ -21,6 +21,12 @@ add_library(AltKit
     Sources/AltKit/Types/CodableServerError.swift
 )
 
-target_link_libraries(AltKit PUBLIC CAltKit)
+target_link_libraries(AltKit PRIVATE CAltKit)
 set_property(TARGET AltKit PROPERTY XCODE_ATTRIBUTE_SWIFT_INCLUDE_PATHS "${CMAKE_CURRENT_SOURCE_DIR}/Sources/CAltKit")
 set_property(TARGET AltKit PROPERTY XCODE_ATTRIBUTE_SWIFT_VERSION "5.0")
+target_include_directories(AltKit INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
+
+add_custom_command(TARGET AltKit
+                   POST_BUILD
+                   COMMAND cp $DERIVED_SOURCES_DIR/AltKit-Swift.h ${CMAKE_CURRENT_BINARY_DIR}
+)
