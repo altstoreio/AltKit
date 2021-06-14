@@ -22,10 +22,16 @@ add_library(AltKit
 )
 
 target_link_libraries(AltKit PRIVATE CAltKit)
-set_property(TARGET AltKit PROPERTY XCODE_ATTRIBUTE_SWIFT_INCLUDE_PATHS "${CMAKE_CURRENT_SOURCE_DIR}/Sources/CAltKit")
+
 set_property(TARGET AltKit PROPERTY XCODE_ATTRIBUTE_SWIFT_VERSION "5.0")
+
+# Make CAltKit's modulemap available to AltKit
+set_property(TARGET AltKit PROPERTY XCODE_ATTRIBUTE_SWIFT_INCLUDE_PATHS "${CMAKE_CURRENT_SOURCE_DIR}/Sources/CAltKit")
+
+# Add binary dir to interface include path to make Swift header accessible to targets using AltKit
 target_include_directories(AltKit INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
 
+# Copy generated Swift header to binary dir
 add_custom_command(TARGET AltKit
                    POST_BUILD
                    COMMAND cp $DERIVED_SOURCES_DIR/AltKit-Swift.h ${CMAKE_CURRENT_BINARY_DIR}
