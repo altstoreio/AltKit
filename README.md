@@ -27,6 +27,21 @@ Finally, right-click on your app's `Info.plist`, select "Open As > Source Code",
 <string>[Your app] uses the local network to find and communicate with AltServer.</string>
 ```
 
+### CMake Integration
+
+Note: CMake 3.15 is required for the integration. The integration only works with the Xcode generator.
+
+Steps:
+- Add the AltKit CMake project to your CMake project using `add_subdirectory`.
+- Add Swift to your project's supported languages. (ex.: `project(projName LANGUAGES C Swift)`)
+
+If you're using `add_compile_options` or `target_compile_options` and the Swift compiler complains about the option not being supported, it's possible to use CMake's generator expressions to limit the options to non-Swift source files.
+
+Example:
+```
+add_compile_options($<$<NOT:$<COMPILE_LANGUAGE:Swift>>:-fPIC>)
+```
+
 ## Usage
 
 ### Swift
