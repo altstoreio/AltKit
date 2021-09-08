@@ -6,13 +6,13 @@ AltKit allows apps to communicate with AltServers on the same WiFi network and e
 
 To use AltKit in your app, add the following to your `Package.swift` file's dependencies:
 
-```
+```swift
 .package(url: "https://github.com/rileytestut/AltKit.git", .upToNextMajor(from: "0.0.1")),
 ```
 
 Next, add the AltKit package as a dependency for your target:
 
-```
+```swift
 .product(name: "AltKit", package: "AltKit"),
 ```
 
@@ -45,7 +45,7 @@ add_compile_options($<$<NOT:$<COMPILE_LANGUAGE:Swift>>:-fPIC>)
 ## Usage
 
 ### Swift
-```
+```swift
 import AltKit
 
 ServerManager.shared.startDiscovering()
@@ -71,7 +71,7 @@ ServerManager.shared.autoconnect { result in
 ```
 
 ### Objective-C
-```
+```swift
 @import AltKit;
 
 [[ALTServerManager sharedManager] startDiscovering];
