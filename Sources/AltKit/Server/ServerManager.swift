@@ -19,6 +19,7 @@ public enum ConnectionError: LocalizedError
     case connectionFailed(Server)
     case connectionDropped(Server)
     case unknownUDID
+    case unsupportedOS
     
     public var errorDescription: String? {
         switch self
@@ -27,6 +28,7 @@ public enum ConnectionError: LocalizedError
         case .connectionFailed: return NSLocalizedString("Could not connect to AltServer.", comment: "")
         case .connectionDropped: return NSLocalizedString("The connection to AltServer was dropped.", comment: "")
         case .unknownUDID: return NSLocalizedString("This device's UDID could not be determined.", comment: "")
+        case .unsupportedOS: return NSLocalizedString("This device's OS version is too old to run AltKit.", comment: "")
         }
     }
 }
@@ -106,7 +108,10 @@ public extension ServerManager
         }
         
         self.dispatchQueue.async {
-
+            guard #available(iOS 12, tvOS 12, watchOS 5, macOS 10.14, *) else {
+                finish(.failure(ConnectionError.unsupportedOS))
+                return
+            }
             print("Connecting to service:", server.service)
             
             let connection = NWConnection(to: .service(name: server.service.name, type: server.service.type, domain: server.service.domain, interface: nil), using: .tcp)
