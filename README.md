@@ -25,7 +25,11 @@ Finally, right-click on your app's `Info.plist`, select "Open As > Source Code",
 </array>
 <key>NSLocalNetworkUsageDescription</key>
 <string>[Your app] uses the local network to find and communicate with AltServer.</string>
+<key>ALTDeviceID</key>
+<string></string>
 ```
+
+⚠️ The `ALTDeviceID` key must be present in your app's `Info.plist` to let AltStore know it should replace that entry with the user's device's UDID when sideloading your app, which is required for AltKit to work. For local development with AltKit, we recommend setting `ALTDeviceID` to your development device's UDID to ensure everything works as expected. Otherwise, the exact value doesn't matter as long as the entry exists, since it will be replaced by AltStore during installation.
 
 ### CMake Integration
 
