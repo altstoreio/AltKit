@@ -9,6 +9,7 @@
 import Foundation
 import Network
 
+@available(iOS 12, tvOS 12, watchOS 5, macOS 10.14, *)
 public class NetworkConnection: NSObject, Connection
 {
     public let nwConnection: NWConnection
@@ -52,10 +53,7 @@ public class NetworkConnection: NSObject, Connection
         default: self.nwConnection.cancel()
         }
     }
-}
-
-extension NetworkConnection
-{
+    
     override public var description: String {
         return "\(self.nwConnection.endpoint) (Network)"
     }
