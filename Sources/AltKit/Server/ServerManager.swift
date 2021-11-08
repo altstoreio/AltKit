@@ -49,7 +49,7 @@ public class ServerManager: NSObject
     // Allow other AltKit queues to target this one.
     internal let dispatchQueue = DispatchQueue(label: "io.altstore.altkit.ServerManager", qos: .utility, autoreleaseFrequency: .workItem)
     
-    private let serviceBrowser = NetServiceBrowser()
+    private var serviceBrowser: NetServiceBrowser?
     private var resolvingServices = Set<NetService>()
     
     private var autoconnectGroup: DispatchGroup?
@@ -58,9 +58,6 @@ public class ServerManager: NSObject
     private override init()
     {
         super.init()
-        
-        self.serviceBrowser.delegate = self
-        self.serviceBrowser.includesPeerToPeer = false
         
         NotificationCenter.default.addObserver(self, selector: #selector(ServerManager.didEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ServerManager.willEnterForeground(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
@@ -75,7 +72,17 @@ public extension ServerManager
         guard !self.isDiscovering else { return }
         self.isDiscovering = true
         
-        self.serviceBrowser.searchForServices(ofType: ALTServerServiceType, inDomain: "")
+        DispatchQueue.main.async {
+            // NetServiceBrowser must be initialized on main thread.
+            // https://stackoverflow.com/questions/3526661/nsnetservicebrowser-delegate-not-called-when-searching
+            
+            let serviceBrowser = NetServiceBrowser()
+            serviceBrowser.delegate = self
+            serviceBrowser.includesPeerToPeer = false
+            serviceBrowser.searchForServices(ofType: ALTServerServiceType, inDomain: "")
+            
+            self.serviceBrowser = serviceBrowser
+        }
     }
     
     @objc
@@ -88,7 +95,8 @@ public extension ServerManager
         self.ignoredServers.removeAll()
         self.resolvingServices.removeAll()
         
-        self.serviceBrowser.stop()
+        self.serviceBrowser?.stop()
+        self.serviceBrowser = nil
     }
     
     func connect(to server: Server, completion: @escaping (Result<ServerConnection, Error>) -> Void)
@@ -237,7 +245,7 @@ private extension ServerManager
         
         self.resolvingServices.removeAll()
         self.discoveredServers.removeAll()
-        self.serviceBrowser.stop()
+        self.serviceBrowser?.stop()
     }
     
     @objc
@@ -245,7 +253,7 @@ private extension ServerManager
     {
         guard self.isDiscovering else { return }
         
-        self.serviceBrowser.searchForServices(ofType: ALTServerServiceType, inDomain: "")
+        self.serviceBrowser?.searchForServices(ofType: ALTServerServiceType, inDomain: "")
     }
 }
 
