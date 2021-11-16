@@ -38,8 +38,8 @@ public class ServerManager: NSObject
 {
     public static let shared = ServerManager()
     
-    private(set) var isDiscovering = false
-    private(set) var discoveredServers = [Server]()
+    public private(set) dynamic var isDiscovering = false
+    public private(set) dynamic var discoveredServers = [Server]()
     
     public var discoveredServerHandler: ((Server) -> Void)?
     public var lostServerHandler: ((Server) -> Void)?
